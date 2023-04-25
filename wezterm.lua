@@ -6,6 +6,8 @@ local is_windows = wezterm.target_triple == "x86_64-pc-windows-msvc"
 local mux = wezterm.mux
 local config = {}
 
+config.default_prog = { 'nu' }
+
 config.color_scheme = 'Catppuccin Macchiato'
 
 config.front_end = "WebGpu" -- windows on adreno 618 have no appropriate OpenGL support
