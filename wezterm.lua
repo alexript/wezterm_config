@@ -22,6 +22,7 @@ config.default_cwd = "e:/Workspace"
 
 config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
+config.tab_max_width = 24
 
 config.window_decorations = "NONE"
 config.window_padding = {
@@ -45,11 +46,11 @@ function tab_title(tab_info)
     local title = tab_info.tab_title
     -- if the tab title is explicitly set, take that
     if title and #title > 0 then
-        return title
+        return tab_info.tab_id .. ':' .. title
     end
     -- Otherwise, use the title from the active pane
     -- in that tab
-    return tab_info.active_pane.title
+    return tab_info.tab_id .. '@' .. tab_info.window_id --.active_pane.title
 end
 
 wezterm.on(
@@ -73,15 +74,12 @@ wezterm.on(
 
         -- ensure that the titles fit in the available space,
         -- and that we have room for the edges.
-        title = wezterm.truncate_right(title, max_width - 2)
+        title = wezterm.truncate_right(title, max_width - 3)
 
         return {
-            { Background = { Color = edge_background } },
-            { Foreground = { Color = edge_foreground } },
-            { Text = SOLID_LEFT_ARROW },
             { Background = { Color = background } },
             { Foreground = { Color = foreground } },
-            { Text = title },
+            { Text = ' ' .. title .. ' ' },
             { Background = { Color = edge_background } },
             { Foreground = { Color = edge_foreground } },
             { Text = SOLID_RIGHT_ARROW },
@@ -111,6 +109,10 @@ wezterm.on('update-right-status', function(window, pane)
             end
             -- and extract the cwd from the uri
             cwd = cwd_uri:sub(slash)
+
+            if is_windows then
+                cwd = cwd:gsub('/', '\\'):sub(2)
+            end
 
             table.insert(cells, cwd)
             table.insert(cells, hostname)
@@ -144,21 +146,19 @@ wezterm.on('update-right-status', function(window, pane)
     local num_cells = 0
 
     -- Translate a cell into elements
-    function push(text, is_last)
+    function push(text)
         local cell_no = num_cells + 1
+        table.insert(elements, { Foreground = { Color = colors[cell_no] } })
+        table.insert(elements, { Text = SOLID_LEFT_ARROW })
         table.insert(elements, { Foreground = { Color = text_fg } })
         table.insert(elements, { Background = { Color = colors[cell_no] } })
         table.insert(elements, { Text = ' ' .. text .. ' ' })
-        if not is_last then
-            table.insert(elements, { Foreground = { Color = colors[cell_no + 1] } })
-            table.insert(elements, { Text = SOLID_LEFT_ARROW })
-        end
         num_cells = num_cells + 1
     end
 
     while #cells > 0 do
         local cell = table.remove(cells, 1)
-        push(cell, #cells == 0)
+        push(cell)
     end
 
     window:set_right_status(wezterm.format(elements))
