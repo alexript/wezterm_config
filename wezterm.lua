@@ -19,6 +19,16 @@ config.font_size = 14.0
 config.default_cwd = "e:/Workspace"
 
 config.use_fancy_tab_bar = false
+config.hide_tab_bar_if_only_one_tab = true
+
+config.window_decorations = "NONE"
+config.window_padding = {
+    left = 0,
+    right = 0,
+    top = 10,
+    bottom = 1
+}
+
 -- The filled in variant of the < symbol
 local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
 
@@ -77,7 +87,12 @@ wezterm.on(
     end
 )
 
-
+-- format window title
+wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+    local numtabs = ''
+    if (#tabs > 1) then numtabs = '(' .. tostring(#tabs) .. ') ' end
+    return numtabs .. tab.active_pane.title
+end)
 
 wezterm.on('gui-startup', function(cmd)
     local tab, pane, window = mux.spawn_window(cmd or {})
