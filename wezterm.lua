@@ -1,4 +1,8 @@
 local wezterm = require 'wezterm'
+
+local is_linux = wezterm.target_triple == "x86_64-unknown-linux-gnu"
+local is_windows = wezterm.target_triple == "x86_64-pc-windows-msvc"
+
 local mux = wezterm.mux
 local config = {}
 
