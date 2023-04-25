@@ -4,6 +4,9 @@ local config = {}
 
 config.color_scheme = 'Catppuccin Macchiato'
 
+config.front_end = "WebGpu" -- windows on adreno 618 have no appropriate OpenGL support
+-- Saftware, OpenGL, WebGpu
+--
 config.font = wezterm.font('DejaVuSansMono NF')
 config.font_size = 14.0
 
