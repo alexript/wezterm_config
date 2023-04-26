@@ -164,11 +164,6 @@ wezterm.on('update-right-status', function(window, pane)
     window:set_right_status(wezterm.format(elements))
 end)
 
-wezterm.on('window-config-reloaded', function(window, pane)
-    window:toast_notification('wezterm', 'configuration reloaded!', nil, 4000)
-end)
-
-
 -- format window title
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
     local numtabs = ''
