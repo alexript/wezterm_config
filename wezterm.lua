@@ -5,8 +5,13 @@ local is_windows = wezterm.target_triple == "x86_64-pc-windows-msvc"
 
 local mux = wezterm.mux
 local config = {}
+print(wezterm.target_triple)
 
-config.default_prog = { 'nu' }
+if is_windows or is_linux then
+    config.default_prog = { 'nu' }
+else
+    config.default_prog = { '/opt/homebrew/bin/nu' }
+end
 
 config.color_scheme = 'Catppuccin Macchiato'
 
