@@ -181,4 +181,9 @@ wezterm.on('gui-startup', function(cmd)
     window:gui_window():maximize()
 end)
 
+local keybinds = require('keybinds')
+config.keys = keybinds.keys
+config.key_tables = keybinds.key_tables
+
+
 return config
