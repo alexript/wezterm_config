@@ -20,7 +20,7 @@ config.front_end = "WebGpu" -- windows on adreno 618 have no appropriate OpenGL 
 --
 config.font_dirs = { 'fonts' }
 config.font_locator = 'ConfigDirsOnly'
-config.font = wezterm.font('DejaVuSansMono NF')
+config.font = wezterm.font('DejaVuSansMono Nerd Font Mono')
 config.font_size = 14.0
 
 config.default_cwd = "e:/Workspace"
