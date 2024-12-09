@@ -24,7 +24,7 @@ config.font = wezterm.font('DejaVuSansMono Nerd Font Mono')
 config.font_size = 14.0
 config.warn_about_missing_glyphs = false
 
-config.default_cwd = "e:/Workspace"
+-- config.default_cwd = "e:/Workspace"
 
 config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
