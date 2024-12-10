@@ -4,8 +4,8 @@ local is_linux = wezterm.target_triple == "x86_64-unknown-linux-gnu"
 local is_windows = wezterm.target_triple == "x86_64-pc-windows-msvc"
 
 local mux = wezterm.mux
-local config = {}
-print(wezterm.target_triple)
+local config = wezterm.config_builder()
+-- print(wezterm.target_triple)
 
 if is_windows or is_linux then
     config.default_prog = { 'nu' }
@@ -102,26 +102,36 @@ wezterm.on('update-right-status', function(window, pane)
     -- shell is using OSC 7 on the remote host.
     local cwd_uri = pane:get_current_working_dir()
     if cwd_uri then
-        cwd_uri = cwd_uri:sub(8)
-        local slash = cwd_uri:find '/'
         local cwd = ''
         local hostname = ''
-        if slash then
-            hostname = cwd_uri:sub(1, slash - 1)
-            -- Remove the domain name portion of the hostname
-            local dot = hostname:find '[.]'
-            if dot then
-                hostname = hostname:sub(1, dot - 1)
-            end
-            -- and extract the cwd from the uri
-            cwd = cwd_uri:sub(slash)
 
-            if is_windows then
-                cwd = cwd:gsub('/', '\\'):sub(2)
-            end
+        if type(cwd_uri) == 'userdata' then
+            -- Running on a newer version of wezterm and we have
+            -- a URL object here, making this simple!
 
-            table.insert(cells, cwd)
-            table.insert(cells, hostname)
+            cwd = cwd_uri.file_path
+            hostname = cwd_uri.host or wezterm.hostname()
+        else
+            cwd_uri = cwd_uri:sub(8)
+            local slash = cwd_uri:find '/'
+
+            if slash then
+                hostname = cwd_uri:sub(1, slash - 1)
+                -- Remove the domain name portion of the hostname
+                local dot = hostname:find '[.]'
+                if dot then
+                    hostname = hostname:sub(1, dot - 1)
+                end
+                -- and extract the cwd from the uri
+                cwd = cwd_uri:sub(slash)
+
+                if is_windows then
+                    cwd = cwd:gsub('/', '\\'):sub(2)
+                end
+
+                table.insert(cells, cwd)
+                table.insert(cells, hostname)
+            end
         end
     end
 
